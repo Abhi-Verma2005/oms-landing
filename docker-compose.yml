@@ -1,0 +1,96 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  db:
+    image: mysql:8.0
+    container_name: stellar_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: stellar_wp
+      MYSQL_USER: stellar_user
+      MYSQL_PASSWORD: stellar_password
+      MYSQL_ROOT_PASSWORD: root_password
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+    networks:
+      - stellar_network
+    command: '--default-authentication-plugin=mysql_native_password'
+
+  # WordPress
+  wordpress:
+    image: wordpress:6.4-php8.2-apache
+    container_name: stellar_wordpress
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: stellar_user
+      WORDPRESS_DB_PASSWORD: stellar_password
+      WORDPRESS_DB_NAME: stellar_wp
+      WORDPRESS_DEBUG: 1
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_REDIS_HOST', 'redis');
+        define('WP_REDIS_PORT', 6379);
+        define('WP_REDIS_DATABASE', 0);
+    volumes:
+      - ./wordpress:/var/www/html
+      - ./docker/wordpress/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+    depends_on:
+      - db
+      - redis
+    networks:
+      - stellar_network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: stellar_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - stellar_network
+
+  # phpMyAdmin
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: stellar_phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: stellar_user
+      PMA_PASSWORD: stellar_password
+    depends_on:
+      - db
+    networks:
+      - stellar_network
+
+  # MailHog (Email testing)
+  mailhog:
+    image: mailhog/mailhog
+    container_name: stellar_mailhog
+    restart: unless-stopped
+    ports:
+      - "1025:1025"  # SMTP
+      - "8025:8025"  # Web UI
+    networks:
+      - stellar_network
+
+volumes:
+  db_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  stellar_network:
+    driver: bridge
