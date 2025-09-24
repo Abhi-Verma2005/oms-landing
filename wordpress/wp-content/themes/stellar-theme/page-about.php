@@ -209,7 +209,7 @@ get_header(); ?>
                             <h2 class="h2 text-white mb-4">Ready to get started?</h2>
                             <p class="text-lg text-purple-100 mb-8">We'd love to have you on our team. We're always looking for talented people to join us.</p>
                             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                                <a class="btn text-white bg-white hover:bg-gray-100 shadow-lg group" href="<?php echo esc_url(wp_registration_url()); ?>">
+                                <a class="btn text-white bg-white hover:bg-gray-100 shadow-lg group" href="<?php echo esc_url(home_url('/signup')); ?>">
                                     View open positions <span class="tracking-normal text-slate-500 group-hover:translate-x-0.5 transition-transform duration-150 ease-in-out ml-1">-&gt;</span>
                                 </a>
                                 <a class="btn text-white hover:text-white transition duration-150 ease-in-out w-full group [background:linear-gradient(var(--color-slate-900),var(--color-slate-900))_padding-box,conic-gradient(var(--color-slate-400),var(--color-slate-700)_25%,var(--color-slate-700)_75%,var(--color-slate-400)_100%)_border-box] relative before:absolute before:inset-0 before:bg-slate-800/30 before:rounded-full before:pointer-events-none" href="<?php echo esc_url(home_url('/contact/')); ?>">

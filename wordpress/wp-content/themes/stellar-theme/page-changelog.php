@@ -174,7 +174,7 @@ get_header(); ?>
                         <div>
                             <h2 class="h2 text-white mb-4">Stay updated</h2>
                             <p class="text-lg text-purple-100 mb-8">Subscribe to our newsletter to get notified about new releases and updates.</p>
-                            <a class="btn text-white bg-white hover:bg-gray-100 shadow-lg group" href="<?php echo esc_url(wp_registration_url()); ?>">
+                            <a class="btn text-white bg-white hover:bg-gray-100 shadow-lg group" href="<?php echo esc_url(home_url('/signup')); ?>">
                                 Subscribe <span class="tracking-normal text-slate-500 group-hover:translate-x-0.5 transition-transform duration-150 ease-in-out ml-1">-&gt;</span>
                             </a>
                         </div>

@@ -107,6 +107,97 @@ function stellar_widgets_init() {
 add_action('widgets_init', 'stellar_widgets_init');
 
 /**
+ * Ensure auth pages exist with correct slugs and templates
+ */
+function stellar_ensure_auth_pages() {
+    if (get_option('stellar_auth_pages_created') === 'yes') {
+        return;
+    }
+
+    $pages_to_create = array(
+        array(
+            'title' => 'Sign In',
+            'slug' => 'signin',
+            'template' => 'page-signin.php',
+        ),
+        array(
+            'title' => 'Sign Up',
+            'slug' => 'signup',
+            'template' => 'page-signup.php',
+        ),
+        array(
+            'title' => 'Reset Password',
+            'slug' => 'reset-password',
+            'template' => 'page-reset-password.php',
+        ),
+    );
+
+    foreach ($pages_to_create as $page_def) {
+        $existing = get_page_by_path($page_def['slug']);
+        if (!$existing) {
+            $page_id = wp_insert_post(array(
+                'post_title' => $page_def['title'],
+                'post_name' => $page_def['slug'],
+                'post_status' => 'publish',
+                'post_type' => 'page',
+            ));
+
+            if (!is_wp_error($page_id)) {
+                update_post_meta($page_id, '_wp_page_template', $page_def['template']);
+            }
+        } else {
+            // Ensure template is set on existing page
+            update_post_meta($existing->ID, '_wp_page_template', $page_def['template']);
+        }
+    }
+
+    update_option('stellar_auth_pages_created', 'yes', true);
+}
+add_action('init', 'stellar_ensure_auth_pages');
+
+/**
+ * Ensure Contact and Blog pages exist and set Posts page
+ */
+function stellar_ensure_marketing_pages() {
+    // Contact page
+    $contact = get_page_by_path('contact');
+    if (!$contact) {
+        $contact_id = wp_insert_post(array(
+            'post_title' => 'Contact',
+            'post_name' => 'contact',
+            'post_status' => 'publish',
+            'post_type' => 'page',
+        ));
+        if (!is_wp_error($contact_id)) {
+            // If there is a specific template later, we can set it here
+        }
+    }
+
+    // Blog page (acts as Posts page)
+    $blog = get_page_by_path('blog');
+    if (!$blog) {
+        $blog_id = wp_insert_post(array(
+            'post_title' => 'Blog',
+            'post_name' => 'blog',
+            'post_status' => 'publish',
+            'post_type' => 'page',
+        ));
+        if (!is_wp_error($blog_id)) {
+            $blog_page_id = $blog_id;
+        }
+    } else {
+        $blog_page_id = $blog->ID;
+    }
+
+    if (!empty($blog_page_id)) {
+        update_option('show_on_front', 'page');
+        update_option('page_for_posts', (int) $blog_page_id);
+        // Keep homepage as is if set; otherwise do nothing
+    }
+}
+add_action('init', 'stellar_ensure_marketing_pages');
+
+/**
  * Fallback menu for primary navigation
  */
 function stellar_fallback_menu() {

@@ -18,7 +18,7 @@
                                         <?php the_custom_logo(); ?>
                                     </div>
                                 <?php else : ?>
-                                    <a class="inline-flex" href="<?php echo esc_url(home_url('/')); ?>" aria-label="<?php bloginfo('name'); ?>">
+                                    <a class="inline-flex" href="<?php echo esc_url(home_url('/home')); ?>" aria-label="<?php bloginfo('name'); ?>">
                                         <img src="<?php echo esc_url(get_template_directory_uri()); ?>/assets/images/logo.svg" width="38" height="38" alt="<?php bloginfo('name'); ?>">
                                     </a>
                                 <?php endif; ?>

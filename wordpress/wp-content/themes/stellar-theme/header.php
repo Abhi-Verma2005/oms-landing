@@ -26,7 +26,7 @@
                             <?php the_custom_logo(); ?>
                         </div>
                     <?php else : ?>
-                        <a class="inline-flex" href="<?php echo esc_url(home_url('/')); ?>" aria-label="<?php bloginfo('name'); ?>">
+                        <a class="inline-flex" href="<?php echo esc_url(home_url('/home')); ?>" aria-label="<?php bloginfo('name'); ?>">
                             <img class="max-w-none" src="<?php echo esc_url(get_template_directory_uri()); ?>/assets/images/logo.svg" width="38" height="38" alt="<?php bloginfo('name'); ?>">
                         </a>
                     <?php endif; ?>
@@ -47,10 +47,10 @@
                 <!-- Desktop sign in links -->
                 <ul class="flex-1 flex justify-end items-center">
                     <li>
-                        <a class="font-medium text-sm text-slate-300 hover:text-white whitespace-nowrap transition duration-150 ease-in-out" href="<?php echo esc_url(wp_login_url()); ?>">Sign in</a>
+                        <a class="font-medium text-sm text-slate-300 hover:text-white whitespace-nowrap transition duration-150 ease-in-out" href="<?php echo esc_url(home_url('/signin')); ?>">Sign in</a>
                     </li>
                     <li class="ml-6">
-                        <a class="btn-sm text-slate-300 hover:text-white transition duration-150 ease-in-out w-full group [background:linear-gradient(var(--color-slate-900),var(--color-slate-900))_padding-box,conic-gradient(var(--color-slate-400),var(--color-slate-700)_25%,var(--color-slate-700)_75%,var(--color-slate-400)_100%)_border-box] relative before:absolute before:inset-0 before:bg-slate-800/30 before:rounded-full before:pointer-events-none" href="<?php echo esc_url(wp_registration_url()); ?>">
+                        <a class="btn-sm text-slate-300 hover:text-white transition duration-150 ease-in-out w-full group [background:linear-gradient(var(--color-slate-900),var(--color-slate-900))_padding-box,conic-gradient(var(--color-slate-400),var(--color-slate-700)_25%,var(--color-slate-700)_75%,var(--color-slate-400)_100%)_border-box] relative before:absolute before:inset-0 before:bg-slate-800/30 before:rounded-full before:pointer-events-none" href="<?php echo esc_url(home_url('/signup')); ?>">
                             <span class="relative inline-flex items-center">
                                 Sign up <span class="tracking-normal text-purple-500 group-hover:translate-x-0.5 transition-transform duration-150 ease-in-out ml-1">-&gt;</span>
                             </span>

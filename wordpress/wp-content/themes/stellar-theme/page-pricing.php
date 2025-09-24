@@ -84,7 +84,7 @@ get_header(); ?>
                                 <div class="text-slate-500">Everything at your fingertips.</div>
                             </div>
                             <div class="pb-4 border-b border-slate-800">
-                                <a class="btn-sm text-slate-900 bg-linear-to-r from-white/80 via-white to-white/80 hover:bg-white w-full transition duration-150 ease-in-out group" href="<?php echo esc_url(wp_registration_url()); ?>">
+                                <a class="btn-sm text-slate-900 bg-linear-to-r from-white/80 via-white to-white/80 hover:bg-white w-full transition duration-150 ease-in-out group" href="<?php echo esc_url(home_url('/signup')); ?>">
                                     Get Started <span class="tracking-normal text-purple-500 group-hover:translate-x-0.5 transition-transform duration-150 ease-in-out ml-1">-&gt;</span>
                                 </a>
                             </div>
@@ -99,7 +99,7 @@ get_header(); ?>
                                 <div class="text-slate-500">Everything at your fingertips.</div>
                             </div>
                             <div class="pb-4 border-b border-slate-800">
-                                <a class="btn-sm text-white bg-purple-500 hover:bg-purple-600 w-full transition duration-150 ease-in-out group" href="<?php echo esc_url(wp_registration_url()); ?>">
+                                <a class="btn-sm text-white bg-purple-500 hover:bg-purple-600 w-full transition duration-150 ease-in-out group" href="<?php echo esc_url(home_url('/signup')); ?>">
                                     Get Started <span class="tracking-normal text-purple-300 group-hover:translate-x-0.5 transition-transform duration-150 ease-in-out ml-1">-&gt;</span>
                                 </a>
                             </div>
@@ -114,7 +114,7 @@ get_header(); ?>
                                 <div class="text-slate-500">Everything at your fingertips.</div>
                             </div>
                             <div class="pb-4 border-b border-slate-800">
-                                <a class="btn-sm text-slate-900 bg-linear-to-r from-white/80 via-white to-white/80 hover:bg-white w-full transition duration-150 ease-in-out group" href="<?php echo esc_url(wp_registration_url()); ?>">
+                                <a class="btn-sm text-slate-900 bg-linear-to-r from-white/80 via-white to-white/80 hover:bg-white w-full transition duration-150 ease-in-out group" href="<?php echo esc_url(home_url('/signup')); ?>">
                                     Get Started <span class="tracking-normal text-purple-500 group-hover:translate-x-0.5 transition-transform duration-150 ease-in-out ml-1">-&gt;</span>
                                 </a>
                             </div>

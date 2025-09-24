@@ -36,7 +36,7 @@ get_header(); ?>
                 <!-- Form -->
                 <div class="max-w-sm mx-auto">
 
-                    <form method="post" action="<?php echo esc_url(wp_registration_url()); ?>">
+                    <form method="post" action="<?php echo esc_url(home_url('/signup')); ?>">
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm text-slate-300 font-medium mb-1" for="company">Company <span class="text-rose-500">*</span></label>
@@ -77,7 +77,7 @@ get_header(); ?>
 
                     <div class="text-center mt-4">
                         <div class="text-sm text-slate-400">
-                            Already have an account? <a class="font-medium text-purple-500 hover:text-purple-400 transition duration-150 ease-in-out" href="<?php echo esc_url(wp_login_url()); ?>">Sign in</a>
+                            Already have an account? <a class="font-medium text-purple-500 hover:text-purple-400 transition duration-150 ease-in-out" href="<?php echo esc_url(home_url('/signin')); ?>">Sign in</a>
                         </div>
                     </div>
                     
