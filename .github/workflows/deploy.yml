@@ -1,0 +1,141 @@
+name: Deploy WordPress Landing Page
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Test Docker build
+      run: |
+        docker-compose build --no-cache
+        echo "✅ Docker build successful"
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Deploy to VM
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: ${{ secrets.SSH_PORT }}
+        timeout: 6h
+        command_timeout: 180m
+        script: |
+          set -e
+          
+          echo "🚀 Starting WordPress landing page deployment..."
+          cd /home/${{ secrets.SSH_USER }}/landing
+          
+          # Verify we're in the right repository
+          echo "📋 Current repository:"
+          git remote -v
+          
+          # Pull latest code from the repository
+          echo "📥 Pulling latest code..."
+          git pull origin main
+          
+          # Go to parent directory for unified deployment
+          cd /home/${{ secrets.SSH_USER }}
+          
+          # Update WordPress landing page in unified setup
+          echo "🔄 Updating WordPress landing page..."
+          cp -r landing/* oms-landing/
+          
+          # Restart WordPress container
+          echo "🔄 Restarting WordPress container..."
+          docker-compose -f docker-compose-unified.yml restart wordpress
+          
+          # Wait for WordPress to be ready
+          echo "⏳ Waiting for WordPress to start..."
+          sleep 30
+          
+          # Health check
+          echo "🏥 Performing health check..."
+          for i in {1..10}; do
+            if curl -f http://localhost:8080 > /dev/null 2>&1; then
+              echo "✅ WordPress is healthy!"
+              break
+            else
+              echo "⏳ Attempt $i/10: WordPress not ready yet..."
+              sleep 10
+            fi
+          done
+          
+          # Final health check
+          if ! curl -f http://localhost:8080 > /dev/null 2>&1; then
+            echo "❌ Health check failed after 10 attempts"
+            echo "📋 Container status:"
+            docker-compose -f docker-compose-unified.yml ps
+            echo "📋 WordPress logs:"
+            docker-compose -f docker-compose-unified.yml logs wordpress --tail=50
+            exit 1
+          fi
+          
+          # Show deployment status
+          echo "📊 Deployment Status:"
+          docker-compose -f docker-compose-unified.yml ps
+          
+          echo "✅ WordPress landing page deployment successful!"
+          echo "📋 Repository: $(git config --get remote.origin.url)"
+          echo "📋 Latest commit: $(git log -1 --oneline)"
+          echo "🌐 WordPress URL: http://localhost:8080"
+
+    - name: Rollback on failure
+      if: failure()
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: ${{ secrets.SSH_PORT }}
+        timeout: 6h
+        command_timeout: 180m
+        script: |
+          echo "🔄 Starting rollback process..."
+          cd /home/${{ secrets.SSH_USER }}/landing
+          
+          # Get the previous commit
+          PREVIOUS_COMMIT=$(git log -2 --oneline | tail -1 | cut -d' ' -f1)
+          echo "🔄 Rolling back to commit: $PREVIOUS_COMMIT"
+          
+          # Reset to previous commit
+          git reset --hard $PREVIOUS_COMMIT
+          
+          # Update WordPress landing page
+          cd /home/${{ secrets.SSH_USER }}
+          cp -r landing/* oms-landing/
+          
+          # Restart WordPress container
+          docker-compose -f docker-compose-unified.yml restart wordpress
+          
+          # Wait and check health
+          sleep 30
+          if curl -f http://localhost:8080 > /dev/null 2>&1; then
+            echo "✅ Rollback successful!"
+          else
+            echo "❌ Rollback failed - manual intervention required"
+            exit 1
+          fi
